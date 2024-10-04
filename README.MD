@@ -15,7 +15,7 @@ This project consists of three main services:
 **Purpose**: To authenticate users and generate JWT tokens for secure access.
 
 **Endpoints**:
-- **POST /login**
+- **POST http://localhost:8888/authservice/v1/login**
     - **Request Body**:
       ```json
       {
@@ -31,14 +31,21 @@ This project consists of three main services:
       ```
     - **Description**: Authenticates the user and returns a JWT token.
 
+* Note: Initially there is a user with this credentials
+* {
+  "email": "admin@gmial.com",
+  "password": "adminPass"
+  }
 
 
 ### 2. User Service
 
+* NOTE: All these endpoints are protected, make sure to pass bearer token.
+
 **Purpose**: To manage user data with the ability to create, read, update, and delete users.
 
 **Endpoints**:
-- **GET /user**
+- **GET http://localhost:8888/userservice/v1/user**
     - **Response**:
       ```json
       [
@@ -51,7 +58,7 @@ This project consists of three main services:
       ```
     - **Description**: Retrieves a list of all users.
 
-- **GET /user/{id}**
+- **GET http://localhost:8888/userservice/v1/user/{id}**
     - **Response**:
       ```json
       {
@@ -64,7 +71,7 @@ This project consists of three main services:
       ```
     - **Description**: Retrieves a user by their ID.
 
-- **POST /user**
+- **POST http://localhost:8888/userservice/v1/user**
     - **Request Body**:
       ```json
       {
@@ -87,7 +94,7 @@ This project consists of three main services:
       ```
     - **Description**: Creates a new user.
 
-- **PUT /user/{id}**
+- **PUT http://localhost:8888/userservice/v1/user/{id}**
     - **Request Body**:
       ```json
       {
@@ -110,7 +117,7 @@ This project consists of three main services:
       ```
     - **Description**: Updates an existing user by ID.
 
-- **DELETE /user/{id}**
+- **DELETE http://localhost:8888/userservice/v1/user/{id}**
     - **Description**: Deletes a user by their ID.
 
 ### 3. API Gateway
