@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  gateway:
+    image: "gateway:latest"
+    build:
+      context: ./gateway
+    container_name: gateway
+    ports:
+      - "8888:8888"
+    environment:
+      - USER_SERVICE_URI=http://user-service:8080
+      - AUTH_SERVICE_URI=http://auth-service:8989
+      - JWT_PUBLIC_KEY=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlQ6uyBZa3aYoKuUxyLXSt/8LI8gK3XJCARHm20TTqTC2DeDb8H7DduMEM/vL1QPJX1Oj2H1DOkx8ZKKqvp9nVOlLyFdyKoamFx6X6p9rEnoMQl3V7saBdaoXswrp93YE/f85LLAVopluAHrRTEfTAEkeF0oLKz9dfcSaFguOo0oGpw4AdUXVBgvrzgAhzO9njqLI1BI8o88nfKU2VJhIdmyp/eNmsL86G05TsWwoDMIFyJOOSjzLqvD09BpFLZelbERLMpRjLwgOldSqhLAGB9zQJA6dUI7Cg1SjqDMNG+tZcEGP7LE1hSxpzLOvgk+zqGSH3fvYchM65Vyv9YzkVQIDAQAB
+
+  auth-service:
+    image: "auth-service:latest"
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8989:8989"
+    depends_on:
+      - user-service-db
+    environment:
+      - POSTGRES_USER=auth_service
+      - POSTGRES_PASSWORD=auth_pass
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-service-db:5432/user_service
+      - SPRING_DATASOURCE_USERNAME=auth_service
+      - SPRING_DATASOURCE_PASSWORD=auth_pass
+      - JWT_PRIVATE_KEY=MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCVDq7IFlrdpigq5THItdK3/wsjyArdckIBEebbRNOpMLYN4NvwfsN24wQz+8vVA8lfU6PYfUM6THxkoqq+n2dU6UvIV3IqhqYXHpfqn2sSegxCXdXuxoF1qhezCun3dgT9/zkssBWimW4AetFMR9MASR4XSgsrP119xJoWC46jSganDgB1RdUGC+vOACHM72eOosjUEjyjzyd8pTZUmEh2bKn942awvzobTlOxbCgMwgXIk45KPMuq8PT0GkUtl6VsREsylGMvCA6V1KqEsAYH3NAkDp1QjsKDVKOoMw0b61lwQY/ssTWFLGnMs6+CT7OoZIfd+9hyEzrlXK/1jORVAgMBAAECggEAAOIy1Xvv7SRWVLgUQJBB0cE/QDGdFnl/JzJQPA8EUz8NDcv+MC0cbCFbyvSb82US/L1tAmk7Kr2GmjCaS0SZiPm+WT0ojOp0zmE8aVkIejf0cCYw1j3PRbknUnua/Jucr34NqFVWSKNj7XbmhHLDfc4xJ3N9DKzb/eWeED6a/nneKsC0mddf6vSwmYhNFA5vDjng9SGTb7cP6LUODnsX1DW3jch5PWEYbTRTsvgeb1gD+RuCi11cGmmPsrBmBnIVqkiWfqX2G99AyabTxPkHC+S4hOYuoA7TXugGj9bu47ZJGGARAiBZqgtYaPrXETBcT0okUVfL9YDd64fh0QRi4QKBgQDHwf6ER2kDtFqaOdSXQQeX+haseOi89YEBGNKE/QfN4F1wnP7wv3oFNL7s9XYE3aypUICZcvLFpzoRL2bje8Hy9WG5ijS9cM5lfhYQuLGjOUACubSdYhiSdGvr3BniaYKQWXc7Dv8WGeyJHjuwTH/xamu8H5Fruklppyis4nalNQKBgQC/BlZNOdRMB5tUUoOPshCyKlpGs6DnfvvVyDOCB2g/cCwQNS5JVXqsI5PFirO3cNoLQZzw1CIA7kBI6Je0mZfB6hP9reQG8gVRm8CB259VOTTL7wu5H6z9RiCYSzbfDBAOkG99s9itimlvpPhgt3ilRES/+jFBEkY47TmzHYjGoQKBgQCIUP9R37VvPL1zb7F+wnbfJGAitKQGhvbQ+9J1xIJ14P2C4vAq9E/di6Aa7mrqaSfxpykLDmFTtomuvo1VAdhZ51AYIJNbD8cZhZCjOpamj2P6OCZkHFQuZVpcaygS1POvdA4kdFhpCanb7JDI/3t0EK6Sg2xmeoqsmdDtIeHbXQKBgHkksbKEDCizYkSVl62XhZMX3Oydmlt1YoxvTIsX23rvzmHw+Au10/g7D8nlbpfVT9J3p+nq/i2M6uPR7fOwvFdT9Z2Zm9Tzw3+/wNQZzfAkOWFjlhGvDuwIfz9V49SMN9qkqrATUESuVLNi8cmUUUSuCNOe/YGA71vGxiLbhhRBAoGATds8kdb9rSo3Ojzt+Io/jS7CMLIbDrVd7vUv2CTSXowCLwY1W1eiWWjqF6GThpKZztBI3RkwLlUBE+qE4bJgpHmPguW0eB9yHTxbXWsEVG+H1J4CBM9mxWz4U3IQ+wToARzy4Th/GuoA/NIbBmfhnv3fQH2Ygfrj1/ilRP1bNPM=
+      - JWT_PUBLIC_KEY=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlQ6uyBZa3aYoKuUxyLXSt/8LI8gK3XJCARHm20TTqTC2DeDb8H7DduMEM/vL1QPJX1Oj2H1DOkx8ZKKqvp9nVOlLyFdyKoamFx6X6p9rEnoMQl3V7saBdaoXswrp93YE/f85LLAVopluAHrRTEfTAEkeF0oLKz9dfcSaFguOo0oGpw4AdUXVBgvrzgAhzO9njqLI1BI8o88nfKU2VJhIdmyp/eNmsL86G05TsWwoDMIFyJOOSjzLqvD09BpFLZelbERLMpRjLwgOldSqhLAGB9zQJA6dUI7Cg1SjqDMNG+tZcEGP7LE1hSxpzLOvgk+zqGSH3fvYchM65Vyv9YzkVQIDAQAB
+
+  user-service:
+    image: "user-service:latest"
+    build:
+      context: ./user-service
+    container_name: user-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user-service-db
+    environment:
+      - POSTGRES_USER=user-service
+      - POSTGRES_PASSWORD=pass123456!
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-service-db:5432/user_service
+      - SPRING_DATASOURCE_USERNAME=user-service
+      - SPRING_DATASOURCE_PASSWORD=pass123456!
+
+
+  user-service-db:
+    image: "user-service-db:latest"
+    build:
+      context: ./user-service-db
+    container_name: user-service-db
+    environment:
+      - POSTGRES_USER=user-service
+      - POSTGRES_PASSWORD=pass123456!
+      - POSTGRES_DB=user_service
+    ports:
+      - "5433:5432"
